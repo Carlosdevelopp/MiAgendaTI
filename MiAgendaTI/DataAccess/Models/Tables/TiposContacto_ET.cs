@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models.Tables
 {
-    internal class Roles
+    public class TiposContacto_ET
     {
+        public int TipoContactoId { get; set; }
+        public string NombreTipo { get; set; }
+        public string Icono { get; set; }
     }
 }

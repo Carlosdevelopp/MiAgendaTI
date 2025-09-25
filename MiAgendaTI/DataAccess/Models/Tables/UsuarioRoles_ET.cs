@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models.Tables
 {
-    internal class DetallesContactosRedes
+    public class UsuarioRoles_ET
     {
+        public int UsuarioId { get; set; }
+        public int RolId { get; set; }
     }
 }
