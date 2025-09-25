@@ -1,0 +1,77 @@
+﻿@using DataAccess.Models.Tables
+@model List<Usuarios_ET>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>BDUsuarios</title>
+    <!--Agregar bootstrap-->
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <!--Agregar javaScript de bootstrap-->
+    <script src="~/Scripts/bootstrap.js"></script>
+</head>
+<body>
+    <br />
+    @if (TempData["mensaje"] != null)
+    {
+        <div class="alert alert-info text-center">
+            @TempData["mensaje"]
+        </div>
+    }
+
+    <table class="table">
+        <thead class="table-light">
+            <tr>
+                <th>NOMBRE</th>
+                <th>PRIMER APELLIDO</th>
+                <th>SEGUNDO APELLIDO</th>
+                <th>CORREO</th>
+                <th>NOMBREUSURAIO</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PrimerApellido)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SegundoApellido)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Correo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NombreUsuario)
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Actualizar", "Usuarios", new { IdUsuario = item.UsuarioId })" class="btn btn-outline-secondary btn-sm">Editar</a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Eliminar", "Usuarios", new { IdUsuario = item.UsuarioId })" class="btn btn-outline-danger btn-sm">Borrar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>
