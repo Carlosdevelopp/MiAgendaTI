@@ -1,49 +1,48 @@
 ﻿using DataAccess.Contract;
 using DataAccess.Models.Tables;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System.Data;
 
-namespace DataAccess
+namespace DataAccess;
+
+public class MiAgendaDataAccess : IMiAgendaDataAccess
 {
-    public class MiAgendaDataAccess : IMiAgendaDataAccess
+    private readonly string _connectionStrings;
+
+    public MiAgendaDataAccess(IConfiguration configuration)
     {
-        private readonly SqlConnection _dbConnection;
-
-        public MiAgendaDataAccess(SqlConnection dbConnection)
-        {
-            _dbConnection = dbConnection;
-        }
-
-        #region GET
-        //Get List Users
-        public async Task<List<Usuarios_ET>> GetUsuariosList()
-        {
-            var usuarios = new List<Usuarios_ET>();
-
-            using var command = _dbConnection.CreateCommand();
-            command.CommandText = "sp_GetAllUsers";
-            command.CommandType = CommandType.StoredProcedure;
-
-            if (_dbConnection.State != ConnectionState.Open)
-                await _dbConnection.OpenAsync();
-
-            using var reader = await command.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                usuarios.Add(new Usuarios_ET
-                {
-                    UsuarioId = reader.GetInt32(reader.GetOrdinal("UsuarioId")),
-                    Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
-                    PrimerApellido = reader.GetString(reader.GetOrdinal("PrimerApellido")),
-                    SegundoApellido = reader.GetString(reader.GetOrdinal("SegundoApellido")),
-                    Correo = reader.GetString(reader.GetOrdinal("Correo")),
-                    NombreUsuario = reader.GetString(reader.GetOrdinal("NombreUsuario")),
-                    Telefono = reader.GetString(reader.GetOrdinal("Telefono")),
-                    Estado = reader.GetBoolean(reader.GetOrdinal("Estado"))
-                });
-            }
-            return usuarios;
-        }
-        #endregion
+        _connectionStrings = configuration.GetConnectionString("AGENDA_DB_CONNECTION")!;
     }
+
+    #region GET
+    //Get List Users
+    public async Task<List<Usuario>> GetAllUsersAsync()
+    {
+        var usuarios = new List<Usuario>();
+
+        using var connection = new SqlConnection(_connectionStrings);
+        await connection.OpenAsync();
+
+        using var command = new SqlCommand("GetAllUsers", connection);
+        command.CommandType = CommandType.StoredProcedure;
+
+        using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            usuarios.Add(new Usuario
+            {
+                UsuarioId = reader.GetInt32(reader.GetOrdinal("UsuarioId")),
+                Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
+                PrimerApellido = reader.GetString(reader.GetOrdinal("PrimerApellido")),
+                SegundoApellido = reader.GetString(reader.GetOrdinal("SegundoApellido")),
+                Correo = reader.GetString(reader.GetOrdinal("Correo")),
+                NombreUsuario = reader.GetString(reader.GetOrdinal("NombreUsuario")),
+                Telefono = reader.GetString(reader.GetOrdinal("Telefono")),
+                Estado = reader.GetBoolean(reader.GetOrdinal("Estado"))
+            });
+        }
+        return usuarios;
+    }
+    #endregion
 }

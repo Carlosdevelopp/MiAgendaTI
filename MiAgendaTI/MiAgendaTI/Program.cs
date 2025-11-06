@@ -2,7 +2,6 @@ using DataAccess;
 using DataAccess.Contract;
 using Infrastructure.Contract;
 using Infrastructure.Implementation;
-using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +11,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IMiAgendaInfrastructure, MiAgendaInfrastructure>();
 builder.Services.AddScoped<IMiAgendaDataAccess, MiAgendaDataAccess>();
 
-var connectionStrings = builder.Configuration.GetConnectionString("AGENDA_DB_CONNECTION");
-builder.Services.AddScoped<SqlConnection>(provider => new SqlConnection(connectionStrings));
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 
