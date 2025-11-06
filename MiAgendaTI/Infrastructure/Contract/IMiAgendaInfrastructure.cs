@@ -1,9 +1,10 @@
 ﻿using DataAccess.Models.Tables;
 
-namespace Infrastructure.Contract
+namespace Infrastructure.Contract;
+
+public interface IMiAgendaInfrastructure
 {
-    public interface IMiAgendaInfrastructure
-    {
-        Task<List<Usuarios_ET>> GetUsuariosList();
-    }
+    #region GET
+    Task<List<Usuario>> GetAllUsersAsync();
+    #endregion
 }
