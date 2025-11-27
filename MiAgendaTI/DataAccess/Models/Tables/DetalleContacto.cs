@@ -11,4 +11,6 @@ public class DetalleContacto
     public required string URL { get; set; }
     public required string NombreUsuarioRed { get; set; }
     public DateTime FechaRegistro { get; set; }
+
+    public virtual Contacto Contacto { get; set; } = null!;
 }
