@@ -10,4 +10,7 @@ public class Contacto
     public required DateTime FechaNacimiento { get; set; }
     public required string FotoRuta { get; set; }
     public DateTime FechaRegistro { get; set; }
+    public string Telefono { get; set; } = null!;
+
+    public virtual ICollection<DetalleContacto> Detalle { get; set; } = new List<DetalleContactoRed>(); public virtual ICollection<DetalleContactoRed> Detalle { get; set; } = new List<DetalleContactoRed>();
 }
