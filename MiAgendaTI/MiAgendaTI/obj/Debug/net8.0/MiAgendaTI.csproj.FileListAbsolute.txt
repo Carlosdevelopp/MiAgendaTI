@@ -302,3 +302,4 @@ C:\Users\carlo\source\repos\MiAgendaTI\MiAgendaTI\MiAgendaTI\obj\Debug\net8.0\Mi
 C:\Users\carlo\source\repos\MiAgendaTI\MiAgendaTI\MiAgendaTI\obj\Debug\net8.0\ref\MiAgendaTI.dll
 C:\Users\carlo\source\repos\MiAgendaTI\MiAgendaTI\MiAgendaTI\bin\Debug\net8.0\Microsoft.Extensions.Configuration.Abstractions.dll
 C:\Users\carlo\source\repos\MiAgendaTI\MiAgendaTI\MiAgendaTI\bin\Debug\net8.0\Microsoft.Extensions.Primitives.dll
+C:\Users\carlo\source\repos\MiAgendaTI\MiAgendaTI\MiAgendaTI\obj\Debug\net8.0\swae.build.ex.cache
