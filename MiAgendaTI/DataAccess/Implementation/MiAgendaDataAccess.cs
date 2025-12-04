@@ -3,7 +3,6 @@ using DataAccess.Models.Tables;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using System.Runtime.CompilerServices;
 
 namespace DataAccess;
 
@@ -59,6 +58,57 @@ public class MiAgendaDataAccess : IMiAgendaDataAccess
         return result == 1;
     }
 
+    public async Task<List<Contacto>> GetContactoById(int id)
+    {
+        var contactosDict = new Dictionary<int, Contacto>();
+
+        await using var connection = new SqlConnection(_connectionStrings);
+        await connection.OpenAsync();
+
+        await using var command = new SqlCommand("GetContactById", connection);
+        command.CommandType = CommandType.StoredProcedure;
+        command.Parameters.Add("@ContactId", SqlDbType.Int).Value = id;
+
+        using var reader = await command.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            int contactoId = reader.GetInt32(reader.GetOrdinal("ContactoId"));
+
+            if (!contactosDict.ContainsKey(contactoId))
+            {
+                var contacto = new Contacto
+                {
+                    ContactoId = reader.GetInt32(reader.GetOrdinal("ContactoId")),
+                    UsuarioId = reader.GetInt32(reader.GetOrdinal("UsuarioId")),
+                    Nombre = reader.GetString(reader.GetOrdinal("Nombre")),
+                    PrimerApellido = reader.GetString(reader.GetOrdinal("PrimerApellido")),
+                    SegundoApellido = reader.GetString(reader.GetOrdinal("SegundoApellido")),
+                    FechaNacimiento = reader.GetDateTime(reader.GetOrdinal("FechaNacimiento")),
+                    FotoRuta = reader.GetString(reader.GetOrdinal("FotoRuta")),
+                    FechaRegistro = reader.GetDateTime(reader.GetOrdinal("FechaRegistro")),
+                    Telefono = reader.GetString(reader.GetOrdinal("Telefono"))
+                };
+                contactosDict.Add(contactoId, contacto);
+            }
+
+            if (!reader.IsDBNull(reader.GetOrdinal("DetContactoRedId")))
+            {
+                //Agrega cada detalle a  su Contacto (1:N)
+                contactosDict[contactoId].DetalleContacto.Add(new DetalleContacto
+                {
+
+                    DetContactoRedId = reader.GetInt32(reader.GetOrdinal("DetContactoRedId")),
+                    ContactoId = reader.GetInt32(reader.GetOrdinal("ContactoId")),
+                    TipoContactoId = reader.GetInt32(reader.GetOrdinal("TipoContactoId")),
+                    URL = reader.GetString(reader.GetOrdinal("URL")),
+                    NombreUsuarioRed = reader.GetString(reader.GetOrdinal("NombreUsuarioRed")),
+                    FechaRegistro = reader.GetDateTime(reader.GetOrdinal("FechaRegistro"))
+                });
+            }
+        }
+        return contactosDict.Values.ToList();
+    }   
+
     public async Task<List<Usuario>> GetAllUsersAsync()
     {
         var usuarios = new List<Usuario>();
@@ -89,7 +139,7 @@ public class MiAgendaDataAccess : IMiAgendaDataAccess
     #endregion
 
     #region SET
-    public async Task<Usuario> RegisterUser(Usuario usuario)
+    public async Task<Usuario> RegisterUserAsync(Usuario usuario)
     {
         await using var connection = new SqlConnection(_connectionStrings);
         await connection.OpenAsync();
