@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "qryAkxjYTe8=",
+  "dgSpecHash": "620BXcayNmg=",
   "success": true,
   "projectFilePath": "C:\\Users\\carlo\\source\\repos\\MiAgendaTI\\MiAgendaTI\\Infrastructure\\Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\carlo\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\carlo\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
+    "C:\\Users\\carlo\\.nuget\\packages\\isopoh.cryptography.argon2\\2.0.0\\isopoh.cryptography.argon2.2.0.0.nupkg.sha512",
+    "C:\\Users\\carlo\\.nuget\\packages\\isopoh.cryptography.blake2b\\2.0.0\\isopoh.cryptography.blake2b.2.0.0.nupkg.sha512",
+    "C:\\Users\\carlo\\.nuget\\packages\\isopoh.cryptography.securearray\\2.0.0\\isopoh.cryptography.securearray.2.0.0.nupkg.sha512",
     "C:\\Users\\carlo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\8.0.0\\microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
     "C:\\Users\\carlo\\.nuget\\packages\\microsoft.bcl.cryptography\\8.0.0\\microsoft.bcl.cryptography.8.0.0.nupkg.sha512",
     "C:\\Users\\carlo\\.nuget\\packages\\microsoft.data.sqlclient\\6.1.2\\microsoft.data.sqlclient.6.1.2.nupkg.sha512",

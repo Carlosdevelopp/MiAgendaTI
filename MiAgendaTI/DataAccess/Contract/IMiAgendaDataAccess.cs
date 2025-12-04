@@ -7,9 +7,9 @@ public interface IMiAgendaDataAccess
     #region GET
     Task<Usuario?> GetUserByCredentialAsync(string credential);
 
-    Task<bool> ExistsAsync(string SearchValue);
+    Task<bool> ExistsAsync(string correo, string nombreUsuario);
 
-    Task<List<Contacto>> GetContactoById(int id);
+    Task<List<Contacto>> GetContactoByIdAsync(int id);
 
     Task<List<Usuario>> GetAllUsersAsync();
     #endregion
