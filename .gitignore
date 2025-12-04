@@ -6,6 +6,8 @@
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+bin/
+obj/
 
 # Visual Studio
 .vs/
@@ -35,6 +37,8 @@ node_modules/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+Properties/launchSettings.json
+Migrations/
 
 # Packages
 *.nupkg
