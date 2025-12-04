@@ -8,17 +8,17 @@ namespace DataAccess;
 
 public class MiAgendaDataAccess : IMiAgendaDataAccess
 {
-    private readonly string _connectionStrings;
+    private readonly string _connectionString;
 
     public MiAgendaDataAccess(IConfiguration configuration)
     {
-        _connectionStrings = configuration.GetConnectionString("AGENDA_DB_CONNECTION")!;
+        _connectionString = configuration.GetConnectionString("AGENDA_DB_CONNECTION")!;
     }
 
     #region GET
     public async Task<Usuario?> GetUserByCredentialAsync(string credential)
     {
-        using var connection = new SqlConnection(_connectionStrings);
+        using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
         using var command = new SqlCommand("GetUserByCredential", connection);
@@ -44,25 +44,26 @@ public class MiAgendaDataAccess : IMiAgendaDataAccess
         return null;
     }
 
-    public async Task<bool> ExistsAsync(string SearchValue)
+    public async Task<bool> ExistsAsync(string correo, string nombreUsuario)
     {
-        using var connection = new SqlConnection(_connectionStrings);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        using var command = new SqlCommand("UserExists", connection);
+        await using var command = new SqlCommand("UserExists", connection);
         command.CommandType = CommandType.StoredProcedure;
 
-        command.Parameters.AddWithValue("@Valor", SearchValue);
+        command.Parameters.AddWithValue("@Correo", correo);
+        command.Parameters.AddWithValue("@NombreUsuario", nombreUsuario);
 
         int result = Convert.ToInt32(await command.ExecuteScalarAsync());
         return result == 1;
     }
 
-    public async Task<List<Contacto>> GetContactoById(int id)
+    public async Task<List<Contacto>> GetContactoByIdAsync(int id)
     {
         var contactosDict = new Dictionary<int, Contacto>();
 
-        await using var connection = new SqlConnection(_connectionStrings);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
         await using var command = new SqlCommand("GetContactById", connection);
@@ -113,7 +114,7 @@ public class MiAgendaDataAccess : IMiAgendaDataAccess
     {
         var usuarios = new List<Usuario>();
 
-        using var connection = new SqlConnection(_connectionStrings);
+        using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
         using var command = new SqlCommand("GetAllUsers", connection);
@@ -141,7 +142,7 @@ public class MiAgendaDataAccess : IMiAgendaDataAccess
     #region SET
     public async Task<Usuario> RegisterUserAsync(Usuario usuario)
     {
-        await using var connection = new SqlConnection(_connectionStrings);
+        await using var connection = new SqlConnection(_connectionString);
         await connection.OpenAsync();
 
         await using var command = new SqlCommand("RegisterUser", connection);
