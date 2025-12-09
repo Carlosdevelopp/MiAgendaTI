@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("1b52531e-faf5-4253-838d-139f7f085473")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("MiAgendaTI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3810d06ac60dca4cbcc23e9885ba08b0b457ec9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a57a3e8810b86bd280aa55c0c55449d3bd978da6")]
 [assembly: System.Reflection.AssemblyProductAttribute("MiAgendaTI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MiAgendaTI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

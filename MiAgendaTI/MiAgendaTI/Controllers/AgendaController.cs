@@ -14,18 +14,6 @@ public class AgendaController : Controller
     }
 
     #region GET
-    public async Task<IActionResult> Index()
-    {
-        try
-        {
-            var usuarios = await _agendaInfrastructure.GetAllUsersAsync();
-            return View("Index", usuarios);
-        }
-        catch (Exception ex)
-        {
-            ViewBag.ErrorMessage = "Ocurrió un error al obtener los usuarios: " + ex.Message;
-            return View(new List<Usuario>()); // devuelves lista vacía
-        }
-    }
+
     #endregion
 }
