@@ -32,6 +32,21 @@ public class MiAgendaInfrastructure : IMiAgendaInfrastructure
         }
     }
 
+    public async Task<List<Contacto>> GetContactByIdAsync(int usuarioId)
+    {
+        return await _miAgendaDataAccess.GetContactoByIdAsync(usuarioId);
+    }
+
+    public int CalcularEdad(DateTime FechaNacimiento)
+    {
+        var hoy = DateTime.Now;
+        int edad = hoy.Year - FechaNacimiento.Year;
+        if (FechaNacimiento.Date > hoy.AddYears(-edad)) edad--;
+        return edad;
+    }
+    #endregion
+
+    #region SET
     public async Task<(bool Success, string Message)> RegisterAsync(Usuario model)
     {
         bool existe = await _miAgendaDataAccess.ExistsAsync(model.Correo, model.NombreUsuario);
@@ -55,19 +70,6 @@ public class MiAgendaInfrastructure : IMiAgendaInfrastructure
         await _miAgendaDataAccess.RegisterUserAsync(Nuevousuario);
 
         return (true, "Usuario registrado correctamente.");
-    }
-
-    public async Task<List<Contacto>> GetContactByIdAsync(int usuarioId)
-    {
-        return await _miAgendaDataAccess.GetContactoByIdAsync(usuarioId);
-    }
-
-    public int CalcularEdad(DateTime FechaNacimiento)
-    {
-        var hoy = DateTime.Now;
-        int edad = hoy.Year - FechaNacimiento.Year;
-        if (FechaNacimiento.Date > hoy.AddYears(-edad)) edad--;
-        return edad;
     }
     #endregion
 }
