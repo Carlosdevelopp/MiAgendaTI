@@ -15,7 +15,6 @@ public class MiAgendaInfrastructure : IMiAgendaInfrastructure
     }
 
     #region GET
-
     public async Task<Usuario?> LoginAsync(string credential, string password)
     {
         var usuario = await _miAgendaDataAccess.GetUserByCredentialAsync(credential);
