@@ -95,7 +95,7 @@ public class MiAgendaDataAccess : IMiAgendaDataAccess
             if (!reader.IsDBNull(reader.GetOrdinal("DetContactoRedId")))
             {
                 //Agrega cada detalle a  su Contacto (1:N)
-                contactosDict[contactoId].DetalleContacto.Add(new DetalleContacto
+                contactosDict[contactoId].Detalle.Add(new DetalleContacto
                 {
 
                     DetContactoRedId = reader.GetInt32(reader.GetOrdinal("DetContactoRedId")),

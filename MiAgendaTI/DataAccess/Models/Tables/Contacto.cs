@@ -12,5 +12,5 @@ public class Contacto
     public DateTime FechaRegistro { get; set; }
     public string Telefono { get; set; } = null!;
 
-    public virtual ICollection<DetalleContacto> DetalleContacto { get; set; } = new List<DetalleContacto>();
+    public virtual ICollection<DetalleContacto> Detalle { get; set; } = new List<DetalleContacto>();
 }
