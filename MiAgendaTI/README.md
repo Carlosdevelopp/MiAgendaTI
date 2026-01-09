@@ -1,33 +1,48 @@
 # Mi Agenda ADO.NET - Sistema de Gestión de Contactos
 
-Sistema web de gestión de contactos desarrollado con ASP.NET Core 8 y ADO.NET para acceso directo a base de datos mediante procedimientos almacenados. El proyecto está enfocado en buenas prácticas de desarrollo backend, diseño limpio y alto rendimiento.
+Sistema web de gestión de contactos desarrollado con ASP.NET Core MVC y ADO.NET para acceso directo a base de datos mediante procedimientos almacenados. Implementa autenticación segura sin Identity, gestión completa de contactos (CRUD) y recuperación de contraseñas mediante correo electrónico.
 
 ---
 
 ## Características Principales
 
 ### Acceso a Datos con ADO.NET
-- Acceso directo a SQL Server mediante ADO.NET
-- Uso de procedimientos almacenados
-- Operaciones asíncronas con SqlCommand
-- Control total sobre queries SQL
-- Alto rendimiento y mínimo overhead
+- **Acceso directo** a SQL Server mediante ADO.NET
+- **Procedimientos almacenados** para toda la lógica de datos
+- **Operaciones asíncronas** con SqlCommand
+- **Control total** sobre queries SQL
+- **Alto rendimiento** y mínimo overhead
+- **Gestión explícita** de conexiones y comandos
 
-### Arquitectura
-- Arquitectura en N capas (Services → Infrastructure → DataAccess)
-- Separación clara de responsabilidades
-- Inyección de dependencias
-- Principios SOLID aplicados
+### Seguridad y Autenticación
+- **Autenticación personalizada** sin ASP.NET Identity
+- **Cookie-based authentication** con Claims Principal
+- **Hashing de contraseñas** con Argon2id
+- **Recuperación de contraseña** mediante tokens seguros por correo electrónico
+- **Tokens hasheados** en base de datos (nunca almacenados en texto plano)
+- **Validación de propiedad** de recursos (usuarios solo acceden a sus propios contactos)
+- **Protección CSRF** con Anti-Forgery Tokens
+- **Mensajes genéricos** para prevenir enumeración de usuarios
+- **Parámetros tipados** para prevenir SQL Injection
 
-### Configuración
-- Uso de User Secrets para datos sensibles
-- Sin credenciales en el repositorio
+### Sistema de Correo Electrónico
+- **Envío de correos** mediante SMTP
+- **Recuperación de contraseña** con enlaces seguros
+- **Configuración segura** mediante User Secrets
+
+### Gestión de Contactos
+- **CRUD completo** (Crear, Leer, Actualizar, Eliminar)
+- **Información del contacto**: nombre, apellidos, teléfono, fecha de nacimiento
+- **Cálculo automático** de edad
+- **Redes sociales** asociadas a cada contacto
+- **Ordenamiento** alfabético automático
+- **Validación de datos** tanto en cliente como en servidor
 
 ---
 
 ## Responsabilidades por Capa
 
-### 01-Services (Presentation Layer)
+### ServicesUI (Presentation Layer)
 **Responsabilidad**: Interacción con el usuario
 
 - Recibir y validar entrada del usuario
@@ -39,29 +54,29 @@ Sistema web de gestión de contactos desarrollado con ASP.NET Core 8 y ADO.NET p
 - Aplicar validaciones del lado del cliente
 
 **NO**:
-- No lógica de negocio
-- No accede directamente a la base de datos
-- No conoce detalles de implementación de capas inferiores
+- Lógica de negocio
+- Accede directamente a la base de datos
+- Conoce detalles de implementación de capas inferiores
 
 ---
 
-### 02-Infrastructure (Business Logic Layer)
+### Infrastructure (Business Logic Layer)
 **Responsabilidad**: Lógica de negocio
 
 - Implementar reglas de negocio
 - Validar que las operaciones sean permitidas
 - Múltiples operaciones del repositorio
 - Proveer servicios de aplicación (Email, Hashing)
-- Calcular valores derivados
+- Calcular valores derivados (edad a partir de fecha de nacimiento)
 
 **NO**:
 - No conoce ViewModels (pertenecen a la capa UI)
 - No maneja HTTP requests/responses
-- No contene lógica de presentación
+- No contiene lógica de presentación
 
 ---
 
-### 03-DataAccess (Data Layer)
+### DataAccess (Data Layer)
 **Responsabilidad**: Acceso a datos mediante ADO.NET
 
 - Implementar operaciones CRUD con ADO.NET
@@ -69,7 +84,7 @@ Sistema web de gestión de contactos desarrollado con ASP.NET Core 8 y ADO.NET p
 - Manejar conexiones y comandos SQL de forma asíncrona
 - Gestionar parámetros SQL con tipos específicos
 - Manejo de valores NULL con DBNull.Value
-- Retornar resultados de operaciones
+- Usar `await using` para liberación automática de recursos
 
 **NO**:
 - No contiene lógica de negocio
@@ -78,65 +93,50 @@ Sistema web de gestión de contactos desarrollado con ASP.NET Core 8 y ADO.NET p
 
 ---
 
-## Tecnologías Utilizadas
+## Tecnologías y Patrones Implementados
 
-| Categoría | Tecnología | Versión |
-|-----------|------------|---------|
-| Backend | ASP.NET Core | 8.0 |
-| Lenguaje | C# | 12 |
-| Acceso a Datos | ADO.NET | - |
-| Base de Datos | SQL Server | 2019+ |
-| Seguridad | Argon2id | - |
-| Frontend | Razor Views (MVC) | - |
-| CSS | Bootstrap | 5.3 |
-| Validación | jQuery Validation | 1.19 |
+### Stack Tecnológico
 
----
+| Categoría | Tecnología | Versión | Propósito |
+|-----------|------------|---------|-----------|
+| **Backend** | ASP.NET Core | 8.0 | Framework web |
+| **Acceso a Datos** | ADO.NET | - | Acceso directo a BD |
+| **Base de Datos** | SQL Server | 2019+ | Persistencia |
+| **Seguridad** | Argon2id | - | Hashing de contraseñas |
+| **Frontend** | Razor Views (MVC) | - | Motor de vistas |
+| **Frontend** | jQuery | - | Validaciones del lado del cliente |
+| **CSS** | Bootstrap | 5.3 | Diseño responsive |
+| **Validación** | jQuery Validation | 1.19 | Validación cliente |
+| **Email** | System.Net.Mail | - | Envío SMTP |
 
-## Buenas Prácticas Implementadas
+### Patrones de Diseño
+- **Repository Pattern** - Abstracción del acceso a datos
+- **Dependency Injection** - Inyección de dependencias nativa de .NET
+- **ViewModel Pattern** - Separación entre modelos de dominio y presentación
+- **Base Controller Pattern** - Reutilización de funcionalidad común
 
-- Programación asíncrona (async/await)
-- Uso de procedimientos almacenados
-- Inyección de dependencias
-- Separación de responsabilidades
-- Principios SOLID
-- Código limpio y mantenible
-- Uso de `await using` para liberar recursos
-- Parámetros tipados en SQL para prevenir inyección
-- Manejo correcto de valores NULL
+### Principios SOLID
+- **Single Responsibility** - Cada clase tiene una única responsabilidad
+- **Dependency Inversion** - Dependencia de abstracciones (interfaces)
+- **Separation of Concerns** - Separación clara entre capas
 
 ---
 
 ## Implementación de ADO.NET
 
-### Características Clave
+*** Gestión de Conexiones**
+- Connection Strings en User Secrets
+- Uso de `await using` para liberación automática de recursos
+- Apertura y cierre eficiente de conexiones
 
-**Procedimientos Almacenados**
-- Toda la lógica SQL está en la base de datos
-- Reutilización de código SQL
-- Mejor rendimiento mediante planes de ejecución
-- Mayor seguridad
-
-**Operaciones Asíncronas**
-- Uso de `SqlConnection` con `await using`
-- `OpenAsync()` para conexiones no bloqueantes
-- `ExecuteScalarAsync()`, `ExecuteReaderAsync()`, `ExecuteNonQueryAsync()`
-- Liberación automática de recursos
-
-**Manejo de Parámetros**
+*** Prevención de SQL Injection**
 - Parámetros tipados con `SqlDbType`
 - Especificación de tamaño para tipos de longitud variable
-- Manejo de valores NULL con `DBNull.Value`
-- Prevención de SQL Injection
-
-**Gestión de Conexiones**
-- Connection Strings en User Secrets
-- Apertura y cierre automático con `await using`
-- Manejo eficiente de recursos
+- Nunca concatenación de strings en SQL
 
 ---
 
-## Implementación de Seguridad
+##  Implementación de Seguridad
 
 ### Tokens de Recuperación
 - Generación con `RandomNumberGenerator` (criptográficamente seguro)
@@ -144,10 +144,11 @@ Sistema web de gestión de contactos desarrollado con ASP.NET Core 8 y ADO.NET p
 - Expiración de 1 hora
 - Invalidación de tokens previos al generar uno nuevo
 - Marcado como "usado" después de resetear contraseña
+- Almacenamiento mediante procedimiento almacenado
 
-### Autenticación
+###  Autenticación
 - Autenticación basada en Cookies con Claims
-- Sin ASP.NET Identity
+- Sin ASP.NET Identity (implementación personalizada)
 - Hashing de contraseñas con Argon2id
 - Protección CSRF con Anti-Forgery Tokens
 - Validación de propiedad de recursos
@@ -155,189 +156,98 @@ Sistema web de gestión de contactos desarrollado con ASP.NET Core 8 y ADO.NET p
 
 ---
 
-## Flujo de Usuario
+##  Flujo de Usuario
 
-### Registro de Usuario
-1. Usuario completa formulario de registro
-2. Controller valida datos de entrada
-3. Service hashea la contraseña con Argon2id
-4. DataAccess ejecuta procedimiento almacenado `RegisterUser`
-5. Stored Procedure valida que el usuario no exista
-6. SQL Server genera UsuarioId automáticamente
-7. Se retorna el ID del usuario creado o -1 si ya existe
-8. Service maneja el resultado
-9. Usuario recibe confirmación
+###  Registro y Autenticación
+1. Usuario se registra con email y contraseña
+2. Contraseña se hashea con Argon2id antes de guardarse
+3. DataAccess ejecuta procedimiento almacenado `RegisterUser`
+4. Stored Procedure valida que el usuario no exista
+5. SQL Server genera UsuarioId automáticamente
+6. Usuario inicia sesión con credenciales
+7. Se crea cookie de autenticación con Claims
+8. Usuario accede a su agenda de contactos
 
-### Autenticación
-1. Usuario ingresa credenciales
-2. DataAccess ejecuta procedimiento para validar usuario
-3. Service verifica hash de contraseña con Argon2id
-4. Se crea cookie de autenticación con Claims
-5. Usuario accede a su agenda de contactos
-
-### Recuperación de Contraseña
+###  Recuperación de Contraseña
 1. Usuario solicita recuperación desde "Forgot Password"
 2. Sistema genera token seguro y lo hashea
-3. DataAccess guarda token hasheado mediante stored procedure
+3. DataAccess ejecuta `CreatePasswordResetToken` stored procedure
 4. Se envía email con enlace temporal
 5. Usuario hace clic en el enlace (válido 1 hora)
 6. Ingresa nueva contraseña
-7. DataAccess actualiza contraseña y marca token como usado
-8. Sistema confirma actualización
+7. DataAccess ejecuta `ResetPassword` stored procedure
+8. Token se marca como usado y contraseña se actualiza
 
-### Gestión de Contactos
+###  Gestión de Contactos
 1. Usuario autenticado ve solo sus contactos
-2. Puede crear, editar y eliminar contactos
-3. Cada operación ejecuta su procedimiento almacenado correspondiente
-4. Sistema valida que el contacto pertenezca al usuario
+2. DataAccess ejecuta `GetContactsByUserId` stored procedure
+3. Usuario puede crear contacto (ejecuta `CreateContact`)
+4. Usuario puede editar contacto (ejecuta `UpdateContact`)
+5. Usuario puede eliminar contacto (ejecuta `DeleteContact`)
+6. Sistema valida que el contacto pertenezca al usuario
+7. Edad se calcula automáticamente en la capa de negocio
 
 ---
 
-## Seguridad - Checklist
+##  Seguridad - Checklist
 
-- Contraseñas hasheadas con Argon2id
-- Tokens de recuperación hasheados con SHA256
-- Cookies HttpOnly y Secure
-- Protección CSRF con Anti-Forgery Tokens
-- Validación de propiedad de recursos
-- Mensajes genéricos (anti-enumeración)
-- User Secrets para datos sensibles
-- SQL injection prevenido (parámetros tipados)
-- Procedimientos almacenados para lógica de datos
+-  Contraseñas hasheadas con Argon2id
+-  Tokens de recuperación hasheados con SHA256
+-  Cookies HttpOnly y Secure
+-  Protección CSRF con Anti-Forgery Tokens
+-  Validación de propiedad de recursos
+-  Mensajes genéricos (anti-enumeración)
+-  User Secrets para datos sensibles
+-  SQL injection prevenido (parámetros tipados)
+-  XSS prevenido (Razor encode automático)
+-  Procedimientos almacenados para toda la lógica de datos
 
-## Implementación pendiente
-- Autenticación personalizada sin ASP.NET Identity
-- Cookie-based authentication con Claims Principal
-- Hashing de contraseñas con Argon2id
-- Recuperación de contraseña mediante tokens seguros
-- User Secrets para cadenas de conexión
-- Protección contra SQL Injection mediante parámetros
-- Rate limiting
-- Two-Factor Authentication
-- Captcha en login
-- Logging centralizado
+###  Implementación pendiente
+-  Rate limiting
+-  Two-Factor Authentication
+-  Captcha en login
+-  Logging centralizado
 
 ---
 
-## Mejoras Futuras
+##  Mejoras Futuras
 
-### Corto Plazo
+###  Corto Plazo
 - Sistema de roles y permisos
 - Confirmación de email al registrarse
 - Gestión de redes sociales (agregar/eliminar)
 - Subida de fotos de contactos
 - Exportar contactos a CSV/Excel
+- Logging con Serilog
 
-### Mediano Plazo
+###  Mediano Plazo
 - Autenticación de dos factores (2FA)
 - Rate limiting para prevenir ataques
 - Historial de cambios en contactos
 - Búsqueda y filtrado avanzado
-- Logging estructurado con Serilog
-
-### Largo Plazo
+- Paginación de resultados
 - API REST para consumo externo
-- Aplicación móvil (Xamarin/MAUI)
-- Sincronización con Google Contacts
-- Grupos de contactos
-- Recordatorios de cumpleaños
-- Dashboard con estadísticas
 
 ---
 
-## Ventajas de ADO.NET en este Proyecto
-
-### Rendimiento
-- Acceso directo a la base de datos sin ORM overhead
-- Control total sobre las queries ejecutadas
-- Planes de ejecución optimizados en stored procedures
-
-### Control
-- Gestión explícita de conexiones y comandos
-- Control sobre tipos de datos SQL
-- Manejo granular de transacciones
-
-### Seguridad
-- Lógica de negocio SQL en la base de datos
-- Menor superficie de ataque
-- Parámetros tipados previenen SQL Injection
-
-### Mantenibilidad
-- Procedimientos almacenados centralizados
-- Cambios en SQL sin recompilar aplicación
-- Reutilización de lógica de datos
-
----
-
-## Instalación
-
-### Requisitos Previos
-```
-✔ .NET 8.0 SDK
-✔ SQL Server 2019+
-✔ Visual Studio 2022 / VS Code / Rider
-```
-
-### Pasos de Instalación
-
-**1. Clonar el repositorio**
-```bash
-git clone https://github.com/tu-usuario/mi-agenda-adonet.git
-cd mi-agenda-adonet
-```
-
-**2. Configurar User Secrets**
-```bash
-cd 01-Services
-dotnet user-secrets init
-dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=AgendaDB;Integrated Security=True;TrustServerCertificate=True;"
-```
-
-**3. Crear la base de datos y procedimientos almacenados**
-- Ejecutar los scripts SQL incluidos en el proyecto
-
-**4. Restaurar y ejecutar**
-```bash
-dotnet restore
-dotnet run
-```
-
----
-
-## Licencia
+##  Licencia
 
 Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más información.
 
 ---
 
-## Autor
+##  Autor
 
 **Carlos García** - Software Developer (.NET)
 
-- **GitHub**: [https://github.com/Carlosdevelopp](https://github.com/Carlosdevelopp)
-- **LinkedIn**: [https://linkedin.com/in/carlosdevel](https://linkedin.com/in/carlosdevel)
-- **Email**: carlosdevelopp@gmail.com
+-  **LinkedIn**: [carlosdevelopp](https://linkedin.com/in/carlosdevel)
+-  **GitHub**: [Carlosdevelopp](https://github.com/Carlosdevelopp)
+-  **Email**: carlosdevelopp@gmail.com
 
 ---
 
-## Agradecimientos
+##  Agradecimientos
 
 - Documentación oficial de [ASP.NET Core](https://docs.microsoft.com/aspnet/core)
 - Guías de seguridad de [OWASP](https://owasp.org/)
 - Comunidad de desarrolladores .NET
-
----
-
-## Screenshots
-
-### Página de Login
-![Login]()
-
-### Registro de Usuario
-![Registro]()
-
-### Recuperación de Contraseña
-![Recuperación]()
-
-### Agenda de Contactos
-![Agenda]()
